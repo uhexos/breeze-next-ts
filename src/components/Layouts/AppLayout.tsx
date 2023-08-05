@@ -10,7 +10,7 @@ const AppLayout = ({ header, children }: PropsWithChildren<Props>) => {
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
-            <Navigation {...user} />
+            <Navigation  />
 
             {/* Page Heading */}
             <header className="bg-white dark:bg-gray-800 shadow">

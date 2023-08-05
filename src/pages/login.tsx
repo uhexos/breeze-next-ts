@@ -14,13 +14,13 @@ import PrimaryButton from '@/components/PrimaryButton'
 
 const Login = () => {
     const { query } = useRouter()
-
+ 
     const { login } = useAuth({
         middleware: 'guest',
         redirectIfAuthenticated: '/dashboard',
     })
 
-    const [email, setEmail] = useState('')
+    const [email, setEmail  ] = useState('')
     const [password, setPassword] = useState('')
     const [shouldRemember, setShouldRemember] = useState(false)
     const [errors, setErrors] = useState([])
