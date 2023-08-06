@@ -1,6 +1,7 @@
 import { PropsWithChildren, ReactNode } from 'react'
 import Navigation from '@/components/Layouts/Navigation'
 import { useAuth } from '@/hooks/auth'
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@radix-ui/react-navigation-menu'
 interface Props {
     header: ReactNode
 }
@@ -11,7 +12,16 @@ const AppLayout = ({ header, children }: PropsWithChildren<Props>) => {
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
             <Navigation  {...user}/>
-            <Navigation user={user} />
+            <NavigationMenu>
+                <NavigationMenuList>
+                    <NavigationMenuItem>
+                        <NavigationMenuTrigger>Item One</NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                            <NavigationMenuLink>Link</NavigationMenuLink>
+                        </NavigationMenuContent>
+                    </NavigationMenuItem>
+                </NavigationMenuList>
+            </NavigationMenu>
 
             {/* Page Heading */}
             <header className="bg-white dark:bg-gray-800 shadow">
