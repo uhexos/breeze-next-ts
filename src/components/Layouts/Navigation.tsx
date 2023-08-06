@@ -1,260 +1,142 @@
-import {
-    createStyles,
-    Header,
-    HoverCard,
-    Group,
-    Button,
-    UnstyledButton,
-    Text,
-    SimpleGrid,
-    Anchor,
-    Divider,
-    Center,
-    Box,
-    Burger,
-    Drawer,
-    Collapse,
-    ScrollArea,
-    rem,
-} from '@mantine/core';
-// import { MantineLogo } from '@mantine/ds';
-import { useDisclosure } from '@mantine/hooks';
-import {
-    Notification,
-    Code,
-    Book,
-    ChartPie3,
-    Fingerprint,
-    Coin,
-    ChevronDown,
-} from 'tabler-icons-react';
+import ApplicationLogo from '@/components/ApplicationLogo'
+import Dropdown from '@/components/Dropdown'
+import Link from 'next/link'
+import NavLink from '@/components/NavLink'
+import ResponsiveNavLink, { ResponsiveNavButton } from '@/components/ResponsiveNavLink'
+import { DropdownButton } from '@/components/DropdownLink'
+import DropdownLink from '@/components/DropdownLink'
+import { useAuth, User } from '@/hooks/auth'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 
-const useStyles = createStyles((theme) => ({
-    link: {
-        display: 'flex',
-        alignItems: 'center',
-        height: '100%',
-        paddingLeft: theme.spacing.md,
-        paddingRight: theme.spacing.md,
-        textDecoration: 'none',
-        color: theme.colorScheme === 'dark' ? theme.white : theme.black,
-        fontWeight: 500,
-        fontSize: theme.fontSizes.sm,
-
-        [theme.fn.smallerThan('sm')]: {
-            height: rem(42),
-            display: 'flex',
-            alignItems: 'center',
-            width: '100%',
-        },
-
-        ...theme.fn.hover({
-            backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-        }),
-    },
-
-    subLink: {
-        width: '100%',
-        padding: `${theme.spacing.xs} ${theme.spacing.md}`,
-        borderRadius: theme.radius.md,
-
-        ...theme.fn.hover({
-            backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[0],
-        }),
-
-        '&:active': theme.activeStyles,
-    },
-
-    dropdownFooter: {
-        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[0],
-        margin: `calc(${theme.spacing.md} * -1)`,
-        marginTop: theme.spacing.sm,
-        padding: `${theme.spacing.md} calc(${theme.spacing.md} * 2)`,
-        paddingBottom: theme.spacing.xl,
-        borderTop: `${rem(1)} solid ${theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[1]
-            }`,
-    },
-
-    hiddenMobile: {
-        [theme.fn.smallerThan('sm')]: {
-            display: 'none',
-        },
-    },
-
-    hiddenDesktop: {
-        [theme.fn.largerThan('sm')]: {
-            display: 'none',
-        },
-    },
-}));
-
-const mockdata = [
-    {
-        icon: Code,
-        title: 'Open source',
-        description: 'This Pokémon’s cry is very loud and distracting',
-    },
-    {
-        icon: Coin,
-        title: 'Free for everyone',
-        description: 'The fluid of Smeargle’s tail secretions changes',
-    },
-    {
-        icon: Book,
-        title: 'Documentation',
-        description: 'Yanma is capable of seeing 360 degrees without',
-    },
-    {
-        icon: Fingerprint,
-        title: 'Security',
-        description: 'The shell’s rounded shape and the grooves on its.',
-    },
-    {
-        icon: ChartPie3,
-        title: 'Analytics',
-        description: 'This Pokémon uses its flying ability to quickly chase',
-    },
-    {
-        icon: Notification,
-        title: 'Notifications',
-        description: 'Combusken battles with the intensely hot flames it spews',
-    },
-];
-
-export default function Navigation() {
-    const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
-    const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
-    const { classes, theme } = useStyles();
-
-    const links = mockdata.map((item) => (
-        <UnstyledButton className={classes.subLink} key={item.title}>
-            <Group noWrap align="flex-start">
-                {/* <Theme size={34} variant="default" radius="md">
-                    <item.icon size={rem(22)} color={theme.fn.primaryColor()} />
-                </Theme> */}
-                <div>
-                    <Text size="sm" fw={500}>
-                        {item.title}
-                    </Text>
-                    <Text size="xs" color="dimmed">
-                        {item.description}
-                    </Text>
-                </div>
-            </Group>
-        </UnstyledButton>
-    ));
+const Navigation = (user?: User) => {
+    const router = useRouter()
+    const { logout } = useAuth({ middleware: 'auth' })
+    const [open, setOpen] = useState(false)
 
     return (
-        <Box pb={120}>
-            <Header height={60} px="md">
-                <Group position="apart" sx={{ height: '100%' }}>
-                    {/* <MantineLogo size={30} /> */}
+        <nav className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+            {/* Primary Navigation Menu */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex justify-between h-16">
+                    <div className="flex">
+                        {/* Logo */}
+                        <div className="flex-shrink-0 flex items-center">
+                            <Link href="/dashboard">
+                                <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                            </Link>
+                        </div>
 
-                    <Group sx={{ height: '100%' }} spacing={0} className={classes.hiddenMobile}>
-                        <a href="#" className={classes.link}>
-                            Home
-                        </a>
-                        <HoverCard width={600} position="bottom" radius="md" shadow="md" withinPortal>
-                            <HoverCard.Target>
-                                <a href="#" className={classes.link}>
-                                    <Center inline>
-                                        <Box component="span" mr={5}>
-                                            Features
-                                        </Box>
-                                        <ChevronDown size={16} color={theme.fn.primaryColor()} />
-                                    </Center>
-                                </a>
-                            </HoverCard.Target>
+                        {/* Navigation Links */}
+                        <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <NavLink
+                                href="/dashboard"
+                                active={router.pathname === '/dashboard'}>
+                                Dashboard
+                            </NavLink>
+                        </div>
+                    </div>
 
-                            <HoverCard.Dropdown sx={{ overflow: 'hidden' }}>
-                                <Group position="apart" px="md">
-                                    <Text fw={500}>Features</Text>
-                                    <Anchor href="#" fz="xs">
-                                        View all
-                                    </Anchor>
-                                </Group>
+                    {/* Settings Dropdown */}
+                    <div className="hidden sm:flex sm:items-center sm:ml-6">
+                        <div className="ml-3 relative">
+                            <Dropdown
+                                align="right"
+                                width="48"
+                                trigger={
+                                    <span className="inline-flex rounded-md">
+                                        <button className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                                            {user?.name}
 
-                                <Divider
-                                    my="sm"
-                                    mx="-md"
-                                    color={theme.colorScheme === 'dark' ? 'dark.5' : 'gray.1'}
-                                />
+                                            <svg
+                                                className="ml-2 -mr-0.5 h-4 w-4"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 20 20">
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                    clipRule="evenodd"
+                                                />
+                                            </svg>
+                                        </button>
+                                    </span>
+                                }>
+                                {/* Authentication */}
+                                {/* TODO: add active state */}
+                                <DropdownLink href="/profile">
+                                    Profile
+                                </DropdownLink>
+                                <DropdownButton onClick={logout}>
+                                    Logout
+                                </DropdownButton>
+                            </Dropdown>
+                        </div>
+                    </div>
 
-                                <SimpleGrid cols={2} spacing={0}>
-                                    {links}
-                                </SimpleGrid>
+                    {/* Hamburger */}
+                    <div className="-mr-2 flex items-center sm:hidden">
+                        <button
+                            onClick={() => setOpen(open => !open)}
+                            className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out">
+                            <svg
+                                className="h-6 w-6"
+                                stroke="currentColor"
+                                fill="none"
+                                viewBox="0 0 24 24">
+                                {open ? (
+                                    <path
+                                        className="inline-flex"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                ) : (
+                                    <path
+                                        className="inline-flex"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M4 6h16M4 12h16M4 18h16"
+                                    />
+                                )}
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-                                <div className={classes.dropdownFooter}>
-                                    <Group position="apart">
-                                        <div>
-                                            <Text fw={500} fz="sm">
-                                                Get started
-                                            </Text>
-                                            <Text size="xs" color="dimmed">
-                                                Their food sources have decreased, and their numbers
-                                            </Text>
-                                        </div>
-                                        <Button variant="default">Get started</Button>
-                                    </Group>
-                                </div>
-                            </HoverCard.Dropdown>
-                        </HoverCard>
-                        <a href="#" className={classes.link}>
-                            Learn
-                        </a>
-                        <a href="#" className={classes.link}>
-                            Academy
-                        </a>
-                    </Group>
+            {/* Responsive Navigation Menu */}
+            {open && (
+                <div className="block sm:hidden">
+                    <div className="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink
+                            href="/dashboard"
+                            active={router.pathname === '/dashboard'}>
+                            Dashboard
+                        </ResponsiveNavLink>
+                    </div>
 
-                    <Group className={classes.hiddenMobile}>
-                        <Button variant="default">Log in</Button>
-                        <Button>Sign up</Button>
-                    </Group>
+                    {/* Responsive Settings Options */}
+                    <div className="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
+                        <div className="px-4">
+                            <div className="font-medium text-base text-gray-800 dark:text-gray-200">
+                                {user?.name}
+                            </div>
+                            <div className="font-medium text-sm text-gray-500">{user?.email}</div>
+                        </div>
 
-                    <Burger opened={drawerOpened} onClick={toggleDrawer} className={classes.hiddenDesktop} />
-                </Group>
-            </Header>
-
-            <Drawer
-                opened={drawerOpened}
-                onClose={closeDrawer}
-                size="100%"
-                padding="md"
-                title="Navigation"
-                className={classes.hiddenDesktop}
-                zIndex={1000000}
-            >
-                <ScrollArea h={`calc(100vh - ${rem(60)})`} mx="-md">
-                    <Divider my="sm" color={theme.colorScheme === 'dark' ? 'dark.5' : 'gray.1'} />
-
-                    <a href="#" className={classes.link}>
-                        Home
-                    </a>
-                    <UnstyledButton className={classes.link} onClick={toggleLinks}>
-                        <Center inline>
-                            <Box component="span" mr={5}>
-                                Features
-                            </Box>
-                            <ChevronDown size={16} color={theme.fn.primaryColor()} />
-                        </Center>
-                    </UnstyledButton>
-                    <Collapse in={linksOpened}>{links}</Collapse>
-                    <a href="#" className={classes.link}>
-                        Learn
-                    </a>
-                    <a href="#" className={classes.link}>
-                        Academy
-                    </a>
-
-                    <Divider my="sm" color={theme.colorScheme === 'dark' ? 'dark.5' : 'gray.1'} />
-
-                    <Group position="center" grow pb="xl" px="md">
-                        <Button variant="default">Log in</Button>
-                        <Button>Sign up</Button>
-                    </Group>
-                </ScrollArea>
-            </Drawer>
-        </Box>
-    );
+                        <div className="mt-3 space-y-1">
+                            <ResponsiveNavLink href="/profile" active={router.pathname === '/profile'}>Profile</ResponsiveNavLink>
+                            <ResponsiveNavButton onClick={logout}>
+                                Logout
+                            </ResponsiveNavButton>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </nav>
+    )
 }
+
+export default Navigation
